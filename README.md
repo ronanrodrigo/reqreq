@@ -309,6 +309,14 @@ const { showModal, toggleModal, getCurrentRequirements } = useSDKCard(
 
 ## Contributing
 
+We welcome contributions to improve the SDK database! Here are the ways you can help:
+
+### 🎯 Quick Contributions
+- **[Add New SDK](../../issues/new?template=add-new-sdk.yml)** - Request a new SDK to be added
+- **[Report Bug](../../issues/new?template=bug-report.yml)** - Found an issue? Let us know
+- **[Suggest Feature](../../issues/new?template=feature-request.yml)** - Have an idea for improvement?
+
+### 🛠️ Development Contributions
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
 3. Follow the Clean Architecture patterns:
@@ -323,10 +331,25 @@ const { showModal, toggleModal, getCurrentRequirements } = useSDKCard(
 
 ## Adding New SDKs
 
-To add new SDKs to the database:
+Have an SDK that's missing from our database? We'd love to add it!
+
+### 🚀 Quick Start
+1. **[Create a New SDK Request](../../issues/new/choose)** using our structured issue template
+2. Fill out all required information including version history and official sources
+3. Our team will review and validate the information
+4. Once approved, the SDK will be added to the database
+
+### 📝 What We Need
+- Official SDK name and description
+- Version history with iOS/Android requirements
+- Links to official documentation
+- Release dates for major versions
+
+### 🔧 For Developers
+To add SDKs directly to the database:
 
 1. Edit `/public/sdks.json`
-2. Add your SDK following the existing data structure
+2. Follow the structure in our [Adding SDKs Guide](docs/ADDING_SDKS.md)
 3. The domain layer will automatically:
    - Validate the data using value objects
    - Create rich domain entities with business methods
