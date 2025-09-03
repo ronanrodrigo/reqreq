@@ -8,7 +8,7 @@ import { SDKData } from '@/types/sdk';
 export default function Home() {
   const [sdks, setSdks] = useState<SDKData>([]);
   const [filteredSdks, setFilteredSdks] = useState<SDKData>([]);
-  const [selectedType, setSelectedType] = useState('All');
+  const [selectedTag, setSelectedTag] = useState('All');
   const [selectedLanguage, setSelectedLanguage] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -41,8 +41,8 @@ export default function Home() {
   useEffect(() => {
     let filtered = sdks;
 
-    if (selectedType !== 'All') {
-      filtered = filtered.filter(sdk => sdk.type === selectedType);
+    if (selectedTag !== 'All') {
+      filtered = filtered.filter(sdk => sdk.tags.includes(selectedTag));
     }
 
     if (selectedLanguage !== 'All') {
@@ -56,7 +56,7 @@ export default function Home() {
     }
 
     setFilteredSdks(filtered);
-  }, [sdks, selectedType, selectedLanguage, searchTerm]);
+  }, [sdks, selectedTag, selectedLanguage, searchTerm]);
 
   if (loading) {
     return (
@@ -95,10 +95,10 @@ export default function Home() {
 
         <FilterBar
           sdks={sdks}
-          selectedType={selectedType}
+          selectedTag={selectedTag}
           selectedLanguage={selectedLanguage}
           searchTerm={searchTerm}
-          onTypeChange={setSelectedType}
+          onTagChange={setSelectedTag}
           onLanguageChange={setSelectedLanguage}
           onSearchChange={setSearchTerm}
         />

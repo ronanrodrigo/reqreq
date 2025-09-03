@@ -11,7 +11,7 @@ export interface SDKVersion {
 
 export interface SDK {
   name: string;
-  type: string;
+  tags: string[];
   language: string;
   versions: SDKVersion[];
 }
