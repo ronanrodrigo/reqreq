@@ -1,83 +1,35 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import SDKCard from '@/components/SDKCard';
-import FilterBar from '@/components/FilterBar';
-import { SDKData } from '@/types/sdk';
+import { useState } from 'react';
+import SDKCard from '@/presentation/components/SDKCard';
+import FilterBar from '@/presentation/components/FilterBar';
+import { useSDKs } from '@/presentation/hooks/useSDKs';
+import { serviceFactory } from '@/presentation/factories/ServiceFactory';
 
 export default function Home() {
-  const [sdks, setSdks] = useState<SDKData>([]);
-  const [filteredSdks, setFilteredSdks] = useState<SDKData>([]);
   const [selectedTag, setSelectedTag] = useState('All');
   const [selectedLanguage, setSelectedLanguage] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchSdks = async () => {
-      try {
-        // For GitHub Pages deployment, we need to check if we're in production
-        // and use the correct base path. On GitHub Pages, the site is served from
-        // https://ronanrodrigo.github.io/reqreq/
-        const isGitHubPages = typeof window !== 'undefined' && 
-          (window.location.hostname === 'ronanrodrigo.github.io' || 
-           process.env.NODE_ENV === 'production');
-        
-        const basePath = isGitHubPages ? '/reqreq' : '';
-        const url = `${basePath}/sdks.json`;
-        
-        console.log('Fetching from URL:', url);
-        console.log('Is GitHub Pages:', isGitHubPages);
-        console.log('Current hostname:', typeof window !== 'undefined' ? window.location.hostname : 'server');
-        
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch SDK data from ${url}: ${response.status} ${response.statusText}`);
-        }
-        const data: SDKData = await response.json();
-        
-        console.log('Fetched data:', data ? `${data.length} SDKs` : 'No data');
-        
-        // Ensure data is valid array and each SDK has required properties
-        const validData = Array.isArray(data) ? data.filter(sdk => 
-          sdk && sdk.name && sdk.tags && Array.isArray(sdk.tags) && sdk.language && sdk.versions
-        ) : [];
-        
-        console.log('Valid data:', `${validData.length} SDKs after validation`);
-        
-        setSdks(validData);
-        setFilteredSdks(validData);
-      } catch (err) {
-        console.error('Error fetching SDK data:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { sdks, filteredSdks, tags, languages, loading, error, filterSDKs } = useSDKs();
 
-    fetchSdks();
-  }, []);
+  // Create service instances
+  const versionAnalysisService = serviceFactory.createVersionAnalysisService();
+  const modalService = serviceFactory.createModalService();
+  const platformDisplayService = serviceFactory.createPlatformDisplayService();
 
-  useEffect(() => {
-    let filtered = sdks || [];
-
-    if (selectedTag !== 'All') {
-      filtered = filtered.filter(sdk => sdk.tags && sdk.tags.includes(selectedTag));
-    }
-
-    if (selectedLanguage !== 'All') {
-      filtered = filtered.filter(sdk => sdk.language === selectedLanguage);
-    }
-
-    if (searchTerm) {
-      filtered = filtered.filter(sdk => 
-        sdk.name && sdk.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredSdks(filtered);
-  }, [sdks, selectedTag, selectedLanguage, searchTerm]);
+  // Filter SDKs when criteria change
+  const handleFilterChange = (tag: string, language: string, search: string) => {
+    setSelectedTag(tag);
+    setSelectedLanguage(language);
+    setSearchTerm(search);
+    
+    filterSDKs({
+      tag: tag !== 'All' ? tag : undefined,
+      language: language !== 'All' ? language : undefined,
+      searchTerm: search.trim() || undefined
+    });
+  };
 
   if (loading) {
     return (
@@ -115,13 +67,14 @@ export default function Home() {
         </div>
 
         <FilterBar
-          sdks={sdks}
+          tags={tags}
+          languages={languages}
           selectedTag={selectedTag}
           selectedLanguage={selectedLanguage}
           searchTerm={searchTerm}
-          onTagChange={setSelectedTag}
-          onLanguageChange={setSelectedLanguage}
-          onSearchChange={setSearchTerm}
+          onTagChange={(tag) => handleFilterChange(tag, selectedLanguage, searchTerm)}
+          onLanguageChange={(language) => handleFilterChange(selectedTag, language, searchTerm)}
+          onSearchChange={(search) => handleFilterChange(selectedTag, selectedLanguage, search)}
         />
 
         {filteredSdks.length === 0 ? (
@@ -133,7 +86,13 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSdks.map((sdk, index) => (
-              <SDKCard key={index} sdk={sdk} />
+              <SDKCard 
+                key={index} 
+                sdk={sdk} 
+                versionAnalysisService={versionAnalysisService}
+                modalService={modalService}
+                platformDisplayService={platformDisplayService}
+              />
             ))}
           </div>
         )}

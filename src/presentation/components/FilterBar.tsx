@@ -1,9 +1,8 @@
 'use client';
 
-import { SDK } from '@/types/sdk';
-
 interface FilterBarProps {
-  sdks: SDK[];
+  tags: string[];
+  languages: string[];
   selectedTag: string;
   selectedLanguage: string;
   searchTerm: string;
@@ -13,7 +12,8 @@ interface FilterBarProps {
 }
 
 export default function FilterBar({
-  sdks,
+  tags,
+  languages,
   selectedTag,
   selectedLanguage,
   searchTerm,
@@ -21,9 +21,8 @@ export default function FilterBar({
   onLanguageChange,
   onSearchChange,
 }: FilterBarProps) {
-  const allTags = sdks?.flatMap(sdk => sdk.tags || []) || [];
-  const tags = ['All', ...Array.from(new Set(allTags))];
-  const languages = ['All', ...Array.from(new Set(sdks?.map(sdk => sdk.language) || []))];
+  const tagOptions = ['All', ...tags];
+  const languageOptions = ['All', ...languages];
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -54,8 +53,10 @@ export default function FilterBar({
             onChange={(e) => onTagChange(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            {tags.map(tag => (
-              <option key={tag} value={tag}>{tag}</option>
+            {tagOptions.map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
             ))}
           </select>
         </div>
@@ -70,8 +71,10 @@ export default function FilterBar({
             onChange={(e) => onLanguageChange(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            {languages.map(language => (
-              <option key={language} value={language}>{language}</option>
+            {languageOptions.map((language) => (
+              <option key={language} value={language}>
+                {language}
+              </option>
             ))}
           </select>
         </div>
