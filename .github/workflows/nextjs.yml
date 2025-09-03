@@ -53,22 +53,22 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Run tests
         run: ${{ steps.detect-package-manager.outputs.runner }} npm run test:ci
+      - name: Coverage Summary
+        run: |
+          echo "## Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage reports are available in the test artifacts." >> $GITHUB_STEP_SUMMARY
+          if [ -f coverage/lcov-report/index.html ]; then
+            echo "📊 Coverage report generated successfully" >> $GITHUB_STEP_SUMMARY
+          fi
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results
+          name: test-results-and-coverage
           path: |
             coverage/
             junit.xml
           retention-days: 30
-      - name: Upload coverage reports to Codecov
-        if: success()
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
 
   # Build job
   build:
