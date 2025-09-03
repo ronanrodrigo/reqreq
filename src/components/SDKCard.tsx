@@ -50,6 +50,45 @@ export default function SDKCard({ sdk }: SDKCardProps) {
     return [];
   };
 
+  // Function to compare requirements between versions
+  const getVersionStatus = (versionIndex: number) => {
+    if (!sdk.versions || !sdk.versions[versionIndex]) {
+      return 'No data';
+    }
+
+    const currentVersion = sdk.versions[versionIndex];
+    const hasDirectRequirements = currentVersion.platformVersions && currentVersion.platformVersions.length > 0;
+    
+    if (versionIndex === 0) {
+      // First version - if it has requirements, they're new
+      return hasDirectRequirements ? 'Initial requirements' : 'No requirements';
+    }
+
+    if (!hasDirectRequirements) {
+      return 'Same as previous';
+    }
+
+    // This version has requirements - check if they changed from previous
+    const currentRequirements = currentVersion.platformVersions || [];
+    const previousRequirements = getCurrentRequirements(versionIndex - 1);
+
+    // Compare requirements
+    if (previousRequirements.length === 0) {
+      return 'Requirements added';
+    }
+
+    // Check if requirements are different
+    const requirementsChanged = currentRequirements.some(current => {
+      const prevReq = previousRequirements.find(prev => prev && prev.platform === current.platform);
+      return !prevReq || prevReq.version !== current.version;
+    }) || previousRequirements.some(prev => {
+      const currReq = currentRequirements.find(curr => curr && curr.platform === prev.platform);
+      return !currReq;
+    });
+
+    return requirementsChanged ? 'Requirements changed' : 'Same as previous';
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between mb-4">
@@ -168,13 +207,14 @@ export default function SDKCard({ sdk }: SDKCardProps) {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {(sdk.versions || []).map((version, index) => {
                     if (!version) return null;
-                    const hasRequirements = version.platformVersions && version.platformVersions.length > 0;
                     const currentRequirements = getCurrentRequirements(index);
                     const iosReq = currentRequirements.find(p => p && p.platform === 'iOS');
                     const androidReq = currentRequirements.find(p => p && p.platform === 'Android');
+                    const status = getVersionStatus(index);
+                    const isStatusChange = status === 'Requirements changed' || status === 'Requirements added' || status === 'Initial requirements';
                     
                     return (
-                      <tr key={index} className={hasRequirements ? 'bg-blue-50' : ''}>
+                      <tr key={index} className={isStatusChange ? 'bg-blue-50' : ''}>
                         <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
                           v{version.version}
                         </td>
@@ -200,12 +240,18 @@ export default function SDKCard({ sdk }: SDKCardProps) {
                           )}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-sm">
-                          {hasRequirements ? (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              Requirements changed
+                          {isStatusChange ? (
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              status === 'Initial requirements' 
+                                ? 'bg-green-100 text-green-800'
+                                : status === 'Requirements added'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-blue-100 text-blue-800'
+                            }`}>
+                              {status}
                             </span>
                           ) : (
-                            <span className="text-gray-500">Same as previous</span>
+                            <span className="text-gray-500">{status}</span>
                           )}
                         </td>
                       </tr>
