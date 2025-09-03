@@ -2,11 +2,28 @@
 
 This guide explains how to process new SDK requests and add them to the database.
 
-## Process Overview
+## Automated Process Overview
+
+🤖 **New!** SDK additions are now automated for approved issues:
+
+1. **Review the Issue**: Check the submitted issue for completeness and accuracy
+2. **Validate Information**: Verify the data against official sources  
+3. **Apply "approved" Label**: Add the "approved" label to trigger automation
+4. **Automatic Processing**: GitHub Action will:
+   - Extract SDK data from the issue
+   - Add it to `public/sdks.json`
+   - Run tests to ensure data integrity
+   - Commit and push changes
+   - Close the issue with a success message
+   - Trigger automatic deployment
+
+## Manual Process (Fallback)
+
+If automation fails or for complex cases, follow the manual process:
 
 1. **Review the Issue**: Check the submitted issue for completeness and accuracy
 2. **Validate Information**: Verify the data against official sources
-3. **Update JSON**: Add the SDK to `public/sdks.json`
+3. **Update JSON**: Add the SDK to `public/sdks.json` manually
 4. **Test Changes**: Run tests to ensure data integrity
 5. **Deploy**: Merge changes to trigger deployment
 
@@ -38,7 +55,28 @@ When adding a new SDK to `public/sdks.json`, follow this structure:
 }
 ```
 
-## Validation Checklist
+## Automated Workflow Details
+
+The automation is handled by `.github/workflows/auto-add-sdk.yml`:
+
+### Trigger
+- Activated when any issue is labeled with "approved"
+- Only processes issues created from the "Add New SDK" template
+
+### Process Steps
+1. **Extract Data**: Parses the issue body to extract SDK information
+2. **Update JSON**: Adds the SDK to `public/sdks.json` in alphabetical order
+3. **Run Tests**: Executes the full test suite to validate changes
+4. **Commit**: Creates a commit with descriptive message
+5. **Deploy**: Pushes changes to trigger automatic site deployment
+6. **Notify**: Comments on the issue and closes it
+
+### Error Handling
+- If automation fails, the issue is labeled "auto-add-failed"
+- Maintainers are notified to process manually
+- The "approved" label is removed to prevent re-triggering
+
+### Validation Checklist
 
 Before adding a new SDK, verify:
 

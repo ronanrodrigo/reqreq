@@ -1,7 +1,7 @@
 name: "📱 Add New SDK"
 description: "Request to add a new SDK or framework to the version requirements database"
 title: "[NEW SDK]: "
-labels: ["enhancement", "new-sdk", "needs-review"]
+labels: ["enhancement", "new-sdk", "needs-review", "auto-processable"]
 assignees: []
 
 body:
@@ -149,8 +149,12 @@ body:
         
         1. **Review**: A maintainer will review your submission using our [Adding SDKs Guide](../../blob/main/docs/ADDING_SDKS.md)
         2. **Validation**: We'll verify the information against official sources
-        3. **Integration**: If approved, the SDK will be added to `public/sdks.json`
-        4. **Testing**: The addition will be tested with our comprehensive test suite
-        5. **Deployment**: The updated database will be deployed to the live site
+        3. **Approval**: If approved, the issue will be labeled as "approved"
+        4. **Automation**: Our GitHub Action will automatically add the SDK to `public/sdks.json`
+        5. **Testing**: The addition will be tested with our comprehensive test suite
+        6. **Deployment**: The updated database will be deployed to the live site
+        7. **Completion**: The issue will be automatically closed with a success message
+        
+        **🤖 Automated Process**: Once approved, the SDK addition is fully automated - no manual intervention needed!
         
         Thank you for contributing to the SDK database! 🎉
