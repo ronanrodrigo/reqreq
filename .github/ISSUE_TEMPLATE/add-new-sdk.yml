@@ -1,0 +1,156 @@
+name: "📱 Add New SDK"
+description: "Request to add a new SDK or framework to the version requirements database"
+title: "[NEW SDK]: "
+labels: ["enhancement", "new-sdk", "needs-review"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping to expand our SDK database! Please fill out the information below to request a new SDK.
+        
+        **Before submitting:**
+        - ✅ Check that the SDK is not already listed in the [current SDKs](../../blob/main/public/sdks.json)
+        - ✅ Verify the version requirements from official documentation
+        - ✅ Provide accurate and up-to-date information
+
+  - type: input
+    id: sdk-name
+    attributes:
+      label: "SDK/Framework Name"
+      description: "Official name of the SDK or framework"
+      placeholder: "e.g., Firebase SDK, React Native, Flutter"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sdk-type
+    attributes:
+      label: "SDK Type"
+      description: "What type of SDK/framework is this?"
+      options:
+        - Mobile SDK
+        - Cross-platform Framework
+        - Development Tool
+        - Third-party Library
+        - Game Engine
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: programming-language
+    attributes:
+      label: "Primary Programming Language"
+      description: "Main programming language used with this SDK"
+      placeholder: "e.g., Swift, Kotlin, JavaScript, Dart, C#"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "SDK Description"
+      description: "Brief description of what this SDK does"
+      placeholder: "A comprehensive description of the SDK's purpose and functionality"
+    validations:
+      required: true
+
+  - type: input
+    id: official-website
+    attributes:
+      label: "Official Website/Documentation"
+      description: "Link to the official website or documentation"
+      placeholder: "https://..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: version-history
+    attributes:
+      label: "Version Requirements History"
+      description: |
+        Please provide version history with iOS/Android requirements. Use this format:
+        ```
+        Version X.Y.Z (YYYY-MM-DD):
+        - iOS: X.Y+
+        - Android: API Level XX (Android X.Y)
+        
+        Version X.Y.Z (YYYY-MM-DD):
+        - iOS: X.Y+
+        - Android: API Level XX (Android X.Y)
+        ```
+      placeholder: |
+        Version 10.0.0 (2023-09-01):
+        - iOS: 12.0+
+        - Android: API Level 21 (Android 5.0)
+        
+        Version 9.5.0 (2023-06-01):
+        - iOS: 11.0+
+        - Android: API Level 19 (Android 4.4)
+    validations:
+      required: true
+
+  - type: textarea
+    id: sources
+    attributes:
+      label: "Sources & Documentation Links"
+      description: "Provide links to official documentation, changelogs, or release notes that verify the version requirements"
+      placeholder: |
+        - Release notes: https://...
+        - Changelog: https://...
+        - System requirements: https://...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: "Supported Platforms"
+      description: "Which platforms does this SDK support? (Select all that apply)"
+      multiple: true
+      options:
+        - iOS
+        - Android
+        - Web
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: "Additional Information"
+      description: "Any other relevant information about this SDK"
+      placeholder: "Special notes, deprecation warnings, alternative SDKs, etc."
+
+  - type: checkboxes
+    id: verification
+    attributes:
+      label: "Verification Checklist"
+      description: "Please confirm the following:"
+      options:
+        - label: "I have verified the version requirements from official sources"
+          required: true
+        - label: "I have checked that this SDK is not already in the database"
+          required: true
+        - label: "The information provided is accurate and up-to-date"
+          required: true
+        - label: "I have provided links to official documentation"
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### What happens next?
+        
+        1. **Review**: A maintainer will review your submission using our [Adding SDKs Guide](../../blob/main/docs/ADDING_SDKS.md)
+        2. **Validation**: We'll verify the information against official sources
+        3. **Integration**: If approved, the SDK will be added to `public/sdks.json`
+        4. **Testing**: The addition will be tested with our comprehensive test suite
+        5. **Deployment**: The updated database will be deployed to the live site
+        
+        Thank you for contributing to the SDK database! 🎉

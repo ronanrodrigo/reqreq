@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "🔧 General Discussion"
+    url: https://github.com/ronanrodrigo/reqreq/discussions
+    about: "General questions, ideas, or discussions about the project"
+  - name: "📖 Documentation"
+    url: https://github.com/ronanrodrigo/reqreq/blob/main/README.md
+    about: "Read the project documentation and architecture guide"
