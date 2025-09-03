@@ -17,14 +17,18 @@ export default function Home() {
   useEffect(() => {
     const fetchSdks = async () => {
       try {
-        const response = await fetch('/sdks.json');
+        // Use the same base path logic as next.config.ts
+        const isProd = process.env.NODE_ENV === 'production';
+        const basePath = isProd ? '/reqreq' : '';
+        const response = await fetch(`${basePath}/sdks.json`);
         if (!response.ok) {
-          throw new Error('Failed to fetch SDK data');
+          throw new Error(`Failed to fetch SDK data: ${response.status} ${response.statusText}`);
         }
         const data: SDKData = await response.json();
         setSdks(data);
         setFilteredSdks(data);
       } catch (err) {
+        console.error('Error fetching SDK data:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
