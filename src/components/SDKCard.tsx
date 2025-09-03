@@ -110,18 +110,16 @@ export default function SDKCard({ sdk }: SDKCardProps) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-semibold text-gray-900">{sdk.name}</h3>
         <div className="flex flex-wrap gap-1">
-          {(sdk.tags || []).map((tag, index) => (
-            <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-              {tag}
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+            {sdk.language}
+          </span>
+          {(sdk.tags || []).length > 0 && (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {sdk.tags[0]}
+              {sdk.tags.length > 1 && ` +${sdk.tags.length - 1}`}
             </span>
-          ))}
+          )}
         </div>
-      </div>
-      
-      <div className="mb-4">
-        <p className="text-sm text-gray-600">
-          <strong>Language:</strong> {sdk.language}
-        </p>
       </div>
 
       <div className="space-y-2">
