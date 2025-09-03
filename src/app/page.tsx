@@ -17,18 +17,35 @@ export default function Home() {
   useEffect(() => {
     const fetchSdks = async () => {
       try {
-        // Use the same base path logic as next.config.ts
-        const isProd = process.env.NODE_ENV === 'production';
-        const basePath = isProd ? '/reqreq' : '';
-        const response = await fetch(`${basePath}/sdks.json`);
+        // For GitHub Pages deployment, we need to check if we're in production
+        // and use the correct base path. On GitHub Pages, the site is served from
+        // https://ronanrodrigo.github.io/reqreq/
+        const isGitHubPages = typeof window !== 'undefined' && 
+          (window.location.hostname === 'ronanrodrigo.github.io' || 
+           process.env.NODE_ENV === 'production');
+        
+        const basePath = isGitHubPages ? '/reqreq' : '';
+        const url = `${basePath}/sdks.json`;
+        
+        console.log('Fetching from URL:', url);
+        console.log('Is GitHub Pages:', isGitHubPages);
+        console.log('Current hostname:', typeof window !== 'undefined' ? window.location.hostname : 'server');
+        
+        const response = await fetch(url);
         if (!response.ok) {
-          throw new Error(`Failed to fetch SDK data: ${response.status} ${response.statusText}`);
+          throw new Error(`Failed to fetch SDK data from ${url}: ${response.status} ${response.statusText}`);
         }
         const data: SDKData = await response.json();
+        
+        console.log('Fetched data:', data ? `${data.length} SDKs` : 'No data');
+        
         // Ensure data is valid array and each SDK has required properties
         const validData = Array.isArray(data) ? data.filter(sdk => 
           sdk && sdk.name && sdk.tags && Array.isArray(sdk.tags) && sdk.language && sdk.versions
         ) : [];
+        
+        console.log('Valid data:', `${validData.length} SDKs after validation`);
+        
         setSdks(validData);
         setFilteredSdks(validData);
       } catch (err) {
