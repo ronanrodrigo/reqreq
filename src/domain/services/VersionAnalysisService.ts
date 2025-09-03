@@ -36,18 +36,47 @@ export class VersionAnalysisService implements IVersionAnalysisService {
     const currentVersion = sdk.versions[versionIndex];
     const hasDirectRequirements = currentVersion.hasRequirements();
     
-    if (versionIndex === 0) {
-      // First version - if it has requirements, they're new
+    // Only return "Initial requirements" or "No requirements" if this is the only version
+    if (sdk.versions.length === 1) {
       return hasDirectRequirements ? 'Initial requirements' : 'No requirements';
+    }
+
+    // If this is the first version in the array (newest chronologically), treat it as initial
+    if (versionIndex === 0) {
+      // For the newest version, compare with the next version in the array
+      if (!hasDirectRequirements) {
+        return 'Same as previous';
+      }
+      
+      const currentRequirements = currentVersion.platformVersions || [];
+      const previousVersion = sdk.versions[1];
+      const previousRequirements = previousVersion && previousVersion.hasRequirements() ? 
+        previousVersion.platformVersions : [];
+
+      if (previousRequirements.length === 0) {
+        return 'Requirements added';
+      }
+
+      const requirementsChanged = currentRequirements.some(current => {
+        const prevReq = previousRequirements.find(prev => prev && prev.platform === current.platform);
+        return !prevReq || prevReq.version !== current.version;
+      }) || previousRequirements.some(prev => {
+        const currReq = currentRequirements.find(curr => curr && curr.platform === prev.platform);
+        return !currReq;
+      });
+
+      return requirementsChanged ? 'Requirements changed' : 'Same as previous';
     }
 
     if (!hasDirectRequirements) {
       return 'Same as previous';
     }
 
-    // This version has requirements - check if they changed from previous
+    // This version has requirements - check if they changed from previous version (lower index)
     const currentRequirements = currentVersion.platformVersions || [];
-    const previousRequirements = this.getCurrentRequirements(sdk, versionIndex - 1);
+    const previousVersion = sdk.versions[versionIndex - 1];
+    const previousRequirements = previousVersion && previousVersion.hasRequirements() ? 
+      previousVersion.platformVersions : [];
 
     // Compare requirements
     if (previousRequirements.length === 0) {

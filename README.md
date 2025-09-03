@@ -1,5 +1,9 @@
 # SDK Version Requirements
 
+![Tests](https://github.com/ronanrodrigo/reqreq/workflows/Deploy%20Next.js%20site%20to%20Pages/badge.svg) 
+![Coverage](https://img.shields.io/badge/coverage-43.75%25-yellow)
+![Tests Passing](https://img.shields.io/badge/tests-114%20passing-green)
+
 A Next.js website that displays SDK and framework version requirements for iOS and Android platforms. This project provides developers with an easy way to check minimum OS version requirements for various mobile development SDKs.
 
 **Built with Clean Architecture and Domain-Driven Design (DDD) principles for maintainability, testability, and scalability.**
