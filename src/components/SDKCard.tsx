@@ -89,6 +89,22 @@ export default function SDKCard({ sdk }: SDKCardProps) {
     return requirementsChanged ? 'Requirements changed' : 'Same as previous';
   };
 
+  // Function to check which platforms have data across all versions
+  const getAvailablePlatforms = () => {
+    const platforms = new Set<string>();
+    
+    (sdk.versions || []).forEach((version, index) => {
+      const requirements = getCurrentRequirements(index);
+      requirements.forEach(req => {
+        if (req && req.platform) {
+          platforms.add(req.platform);
+        }
+      });
+    });
+    
+    return Array.from(platforms).sort();
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between mb-4">
@@ -194,71 +210,87 @@ export default function SDKCard({ sdk }: SDKCardProps) {
             </div>
             
             <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
-              <table className="w-full">
-                <thead className="bg-gray-50 sticky top-0">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Version</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Release Date</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">iOS Requirement</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Android Requirement</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {(sdk.versions || []).map((version, index) => {
-                    if (!version) return null;
-                    const currentRequirements = getCurrentRequirements(index);
-                    const iosReq = currentRequirements.find(p => p && p.platform === 'iOS');
-                    const androidReq = currentRequirements.find(p => p && p.platform === 'Android');
-                    const status = getVersionStatus(index);
-                    const isStatusChange = status === 'Requirements changed' || status === 'Requirements added' || status === 'Initial requirements';
-                    
-                    return (
-                      <tr key={index} className={isStatusChange ? 'bg-blue-50' : ''}>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                          v{version.version}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(version.releaseDate).toLocaleDateString()}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm">
-                          {iosReq ? (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-900 text-white">
-                              iOS {iosReq.version}+
-                            </span>
-                          ) : (
-                            <span className="text-gray-400">-</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm">
-                          {androidReq ? (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500 text-white">
-                              Android {androidReq.version}+
-                            </span>
-                          ) : (
-                            <span className="text-gray-400">-</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm">
-                          {isStatusChange ? (
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              status === 'Initial requirements' 
-                                ? 'bg-green-100 text-green-800'
-                                : status === 'Requirements added'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-blue-100 text-blue-800'
-                            }`}>
-                              {status}
-                            </span>
-                          ) : (
-                            <span className="text-gray-500">{status}</span>
-                          )}
-                        </td>
+              {(() => {
+                const availablePlatforms = getAvailablePlatforms();
+                const hasIOS = availablePlatforms.includes('iOS');
+                const hasAndroid = availablePlatforms.includes('Android');
+                
+                return (
+                  <table className="w-full">
+                    <thead className="bg-gray-50 sticky top-0">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Version</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Release Date</th>
+                        {hasIOS && (
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">iOS Requirement</th>
+                        )}
+                        {hasAndroid && (
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Android Requirement</th>
+                        )}
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {(sdk.versions || []).map((version, index) => {
+                        if (!version) return null;
+                        const currentRequirements = getCurrentRequirements(index);
+                        const iosReq = currentRequirements.find(p => p && p.platform === 'iOS');
+                        const androidReq = currentRequirements.find(p => p && p.platform === 'Android');
+                        const status = getVersionStatus(index);
+                        const isStatusChange = status === 'Requirements changed' || status === 'Requirements added' || status === 'Initial requirements';
+                        
+                        return (
+                          <tr key={index} className={isStatusChange ? 'bg-blue-50' : ''}>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                              v{version.version}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(version.releaseDate).toLocaleDateString()}
+                            </td>
+                            {hasIOS && (
+                              <td className="px-4 py-3 whitespace-nowrap text-sm">
+                                {iosReq ? (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-900 text-white">
+                                    iOS {iosReq.version}+
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-400">-</span>
+                                )}
+                              </td>
+                            )}
+                            {hasAndroid && (
+                              <td className="px-4 py-3 whitespace-nowrap text-sm">
+                                {androidReq ? (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500 text-white">
+                                    Android {androidReq.version}+
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-400">-</span>
+                                )}
+                              </td>
+                            )}
+                            <td className="px-4 py-3 whitespace-nowrap text-sm">
+                              {isStatusChange ? (
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                  status === 'Initial requirements' 
+                                    ? 'bg-green-100 text-green-800'
+                                    : status === 'Requirements added'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-blue-100 text-blue-800'
+                                }`}>
+                                  {status}
+                                </span>
+                              ) : (
+                                <span className="text-gray-500">{status}</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                );
+              })()}
             </div>
           </div>
         </div>
