@@ -108,8 +108,8 @@ export default function SDKCard({ sdk }: SDKCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold text-gray-900">{sdk.name}</h3>
-        <div className="flex flex-wrap gap-1">
+        <h3 className="text-xl font-semibold text-gray-900 truncate flex-1 mr-2">{sdk.name}</h3>
+        <div className="flex flex-wrap gap-1 flex-shrink-0">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
             {sdk.language}
           </span>
