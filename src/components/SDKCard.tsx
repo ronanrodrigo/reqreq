@@ -106,7 +106,7 @@ export default function SDKCard({ sdk }: SDKCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col h-full">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-semibold text-gray-900 truncate flex-1 mr-2">{sdk.name}</h3>
         <div className="flex flex-wrap gap-1 flex-shrink-0">
@@ -122,7 +122,7 @@ export default function SDKCard({ sdk }: SDKCardProps) {
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2 flex-1">
         <h4 className="text-lg font-medium text-gray-900">Recent Versions</h4>
         {(sdk.versions || []).slice(0, 5).map((version, index) => {
           if (!version) return null;
