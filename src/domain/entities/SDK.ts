@@ -34,6 +34,10 @@ export class SDK {
     return this.versions.slice(0, count);
   }
 
+  getRecentVersion(): SDKVersion {
+    return this.versions[0];
+  }
+
   getAllVersionsWithRequirements(): SDKVersion[] {
     return this.versions.filter(v => v.hasRequirements());
   }
