@@ -139,7 +139,6 @@ export default function SDKCard({ sdk }: SDKCardProps) {
               
               {hasRequirements && (
                 <div className="mt-2">
-                  <div className="text-xs text-blue-600 font-medium mb-1">New requirements:</div>
                   <div className="flex flex-wrap gap-1">
                     {version.platformVersions.map((platform, platformIndex) => (
                       <div
