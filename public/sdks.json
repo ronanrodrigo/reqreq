@@ -1,0 +1,170 @@
+[
+  {
+    "name": "React Native",
+    "type": "framework",
+    "language": "JavaScript",
+    "versions": [
+      {
+        "version": "0.64.0",
+        "releaseDate": "2021-09-15",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "10.0"
+          },
+          {
+            "platform": "Android",
+            "version": "5.0"
+          }
+        ]
+      },
+      {
+        "version": "0.70.0",
+        "releaseDate": "2022-09-12",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "11.0"
+          },
+          {
+            "platform": "Android",
+            "version": "6.0"
+          }
+        ]
+      },
+      {
+        "version": "0.72.0",
+        "releaseDate": "2023-06-21",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "12.4"
+          },
+          {
+            "platform": "Android",
+            "version": "6.0"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Flutter",
+    "type": "framework",
+    "language": "Dart",
+    "versions": [
+      {
+        "version": "2.5.0",
+        "releaseDate": "2021-09-08",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "9.0"
+          },
+          {
+            "platform": "Android",
+            "version": "4.1"
+          }
+        ]
+      },
+      {
+        "version": "3.0.0",
+        "releaseDate": "2022-05-11",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "11.0"
+          },
+          {
+            "platform": "Android",
+            "version": "4.1"
+          }
+        ]
+      },
+      {
+        "version": "3.10.0",
+        "releaseDate": "2023-05-10",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "11.0"
+          },
+          {
+            "platform": "Android",
+            "version": "4.1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Xamarin",
+    "type": "framework",
+    "language": "C#",
+    "versions": [
+      {
+        "version": "4.8.0",
+        "releaseDate": "2020-05-19",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "9.0"
+          },
+          {
+            "platform": "Android",
+            "version": "4.4"
+          }
+        ]
+      },
+      {
+        "version": "5.0.0",
+        "releaseDate": "2021-05-25",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "10.0"
+          },
+          {
+            "platform": "Android",
+            "version": "5.0"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Cordova",
+    "type": "framework",
+    "language": "JavaScript",
+    "versions": [
+      {
+        "version": "10.0.0",
+        "releaseDate": "2020-05-20",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "11.0"
+          },
+          {
+            "platform": "Android",
+            "version": "5.1"
+          }
+        ]
+      },
+      {
+        "version": "11.0.0",
+        "releaseDate": "2021-10-01",
+        "platformVersions": [
+          {
+            "platform": "iOS",
+            "version": "12.0"
+          },
+          {
+            "platform": "Android",
+            "version": "6.0"
+          }
+        ]
+      }
+    ]
+  }
+]

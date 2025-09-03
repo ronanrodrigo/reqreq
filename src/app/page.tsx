@@ -1,0 +1,122 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import SDKCard from '@/components/SDKCard';
+import FilterBar from '@/components/FilterBar';
+import { SDKData } from '@/types/sdk';
+
+export default function Home() {
+  const [sdks, setSdks] = useState<SDKData>([]);
+  const [filteredSdks, setFilteredSdks] = useState<SDKData>([]);
+  const [selectedType, setSelectedType] = useState('All');
+  const [selectedLanguage, setSelectedLanguage] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSdks = async () => {
+      try {
+        const response = await fetch('/sdks.json');
+        if (!response.ok) {
+          throw new Error('Failed to fetch SDK data');
+        }
+        const data: SDKData = await response.json();
+        setSdks(data);
+        setFilteredSdks(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSdks();
+  }, []);
+
+  useEffect(() => {
+    let filtered = sdks;
+
+    if (selectedType !== 'All') {
+      filtered = filtered.filter(sdk => sdk.type === selectedType);
+    }
+
+    if (selectedLanguage !== 'All') {
+      filtered = filtered.filter(sdk => sdk.language === selectedLanguage);
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter(sdk => 
+        sdk.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredSdks(filtered);
+  }, [sdks, selectedType, selectedLanguage, searchTerm]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading SDKs...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-2">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading SDKs</h2>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            SDK Version Requirements
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Find the iOS and Android version requirements for popular mobile development SDKs and frameworks.
+          </p>
+        </div>
+
+        <FilterBar
+          sdks={sdks}
+          selectedType={selectedType}
+          selectedLanguage={selectedLanguage}
+          searchTerm={searchTerm}
+          onTypeChange={setSelectedType}
+          onLanguageChange={setSelectedLanguage}
+          onSearchChange={setSearchTerm}
+        />
+
+        {filteredSdks.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-6xl mb-4">🔍</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No SDKs Found</h3>
+            <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredSdks.map((sdk, index) => (
+              <SDKCard key={index} sdk={sdk} />
+            ))}
+          </div>
+        )}
+
+        <div className="mt-12 text-center text-gray-500 text-sm">
+          <p>Found {filteredSdks.length} of {sdks.length} SDKs</p>
+        </div>
+      </div>
+    </div>
+  );
+}
