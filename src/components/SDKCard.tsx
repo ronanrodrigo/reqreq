@@ -123,7 +123,6 @@ export default function SDKCard({ sdk }: SDKCardProps) {
       </div>
 
       <div className="space-y-2 flex-1">
-        <h4 className="text-lg font-medium text-gray-900">Recent Versions</h4>
         {(sdk.versions || []).slice(0, 5).map((version, index) => {
           if (!version) return null;
           const hasRequirements = version.platformVersions && version.platformVersions.length > 0;
