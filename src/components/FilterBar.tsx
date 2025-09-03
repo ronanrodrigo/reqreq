@@ -21,9 +21,9 @@ export default function FilterBar({
   onLanguageChange,
   onSearchChange,
 }: FilterBarProps) {
-  const allTags = sdks.flatMap(sdk => sdk.tags);
+  const allTags = sdks?.flatMap(sdk => sdk.tags || []) || [];
   const tags = ['All', ...Array.from(new Set(allTags))];
-  const languages = ['All', ...Array.from(new Set(sdks.map(sdk => sdk.language)))];
+  const languages = ['All', ...Array.from(new Set(sdks?.map(sdk => sdk.language) || []))];
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-8">

@@ -25,8 +25,12 @@ export default function Home() {
           throw new Error(`Failed to fetch SDK data: ${response.status} ${response.statusText}`);
         }
         const data: SDKData = await response.json();
-        setSdks(data);
-        setFilteredSdks(data);
+        // Ensure data is valid array and each SDK has required properties
+        const validData = Array.isArray(data) ? data.filter(sdk => 
+          sdk && sdk.name && sdk.tags && Array.isArray(sdk.tags) && sdk.language && sdk.versions
+        ) : [];
+        setSdks(validData);
+        setFilteredSdks(validData);
       } catch (err) {
         console.error('Error fetching SDK data:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -39,10 +43,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    let filtered = sdks;
+    let filtered = sdks || [];
 
     if (selectedTag !== 'All') {
-      filtered = filtered.filter(sdk => sdk.tags.includes(selectedTag));
+      filtered = filtered.filter(sdk => sdk.tags && sdk.tags.includes(selectedTag));
     }
 
     if (selectedLanguage !== 'All') {
@@ -51,7 +55,7 @@ export default function Home() {
 
     if (searchTerm) {
       filtered = filtered.filter(sdk => 
-        sdk.name.toLowerCase().includes(searchTerm.toLowerCase())
+        sdk.name && sdk.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 

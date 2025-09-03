@@ -31,6 +31,10 @@ export default function SDKCard({ sdk }: SDKCardProps) {
   
   // Function to get current platform requirements for a version
   const getCurrentRequirements = (versionIndex: number) => {
+    if (!sdk.versions || !sdk.versions[versionIndex]) {
+      return [];
+    }
+    
     // If this version has requirements, use them
     if (sdk.versions[versionIndex].platformVersions) {
       return sdk.versions[versionIndex].platformVersions;
@@ -38,7 +42,7 @@ export default function SDKCard({ sdk }: SDKCardProps) {
     
     // Otherwise, find the most recent version with requirements
     for (let i = versionIndex - 1; i >= 0; i--) {
-      if (sdk.versions[i].platformVersions) {
+      if (sdk.versions[i] && sdk.versions[i].platformVersions) {
         return sdk.versions[i].platformVersions;
       }
     }
@@ -51,7 +55,7 @@ export default function SDKCard({ sdk }: SDKCardProps) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-semibold text-gray-900">{sdk.name}</h3>
         <div className="flex flex-wrap gap-1">
-          {sdk.tags.map((tag, index) => (
+          {(sdk.tags || []).map((tag, index) => (
             <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {tag}
             </span>
@@ -67,7 +71,8 @@ export default function SDKCard({ sdk }: SDKCardProps) {
 
       <div className="space-y-2">
         <h4 className="text-lg font-medium text-gray-900">Recent Versions</h4>
-        {sdk.versions.slice(0, 5).map((version, index) => {
+        {(sdk.versions || []).slice(0, 5).map((version, index) => {
+          if (!version) return null;
           const hasRequirements = version.platformVersions && version.platformVersions.length > 0;
           
           return (
@@ -101,9 +106,9 @@ export default function SDKCard({ sdk }: SDKCardProps) {
             </div>
           );
         })}
-        {sdk.versions.length > 5 && (
+        {(sdk.versions || []).length > 5 && (
           <div className="text-xs text-gray-500 text-center py-1">
-            ... and {sdk.versions.length - 5} more versions
+            ... and {(sdk.versions || []).length - 5} more versions
           </div>
         )}
       </div>
@@ -116,7 +121,7 @@ export default function SDKCard({ sdk }: SDKCardProps) {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
           </svg>
-          View All {sdk.versions.length} Versions
+          View All {(sdk.versions || []).length} Versions
         </button>
       </div>
 
@@ -137,7 +142,7 @@ export default function SDKCard({ sdk }: SDKCardProps) {
                 <div>
                   <h2 className="text-xl font-bold text-gray-900">{sdk.name}</h2>
                   <p className="text-sm text-gray-600">
-                    All {sdk.versions.length} versions • {sdk.versions.filter(v => v.platformVersions).length} requirement changes
+                    All {(sdk.versions || []).length} versions • {(sdk.versions || []).filter(v => v && v.platformVersions).length} requirement changes
                   </p>
                 </div>
                 <button
@@ -161,11 +166,12 @@ export default function SDKCard({ sdk }: SDKCardProps) {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {sdk.versions.map((version, index) => {
+                  {(sdk.versions || []).map((version, index) => {
+                    if (!version) return null;
                     const hasRequirements = version.platformVersions && version.platformVersions.length > 0;
                     const currentRequirements = getCurrentRequirements(index);
-                    const iosReq = currentRequirements.find(p => p.platform === 'iOS');
-                    const androidReq = currentRequirements.find(p => p.platform === 'Android');
+                    const iosReq = currentRequirements.find(p => p && p.platform === 'iOS');
+                    const androidReq = currentRequirements.find(p => p && p.platform === 'Android');
                     
                     return (
                       <tr key={index} className={hasRequirements ? 'bg-blue-50' : ''}>
