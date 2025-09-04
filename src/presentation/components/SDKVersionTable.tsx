@@ -21,27 +21,27 @@ export default function SDKVersionTable({
 
   return (
     <table className="w-full">
-      <thead className="bg-gray-50 sticky top-0">
+      <thead className="bg-muted sticky top-0">
         <tr>
-          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
             Version
           </th>
-          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
             Release Date
           </th>
           {hasIOS && (
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               iOS Requirement
             </th>
           )}
           {hasAndroid && (
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Android Requirement
             </th>
           )}
         </tr>
       </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
+      <tbody className="bg-card divide-y divide-border">
         {sdk.versions.map((version, index) => {
           const currentRequirements = getCurrentRequirements(index);
           const iosReq = currentRequirements.find(p => p && p.platform === 'iOS');
@@ -53,11 +53,11 @@ export default function SDKVersionTable({
             status === 'Initial requirements';
           
           return (
-            <tr key={index} className={isStatusChange ? 'bg-blue-50' : ''}>
-              <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+            <tr key={index} className={isStatusChange ? 'bg-accent' : ''}>
+              <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-card-foreground">
                 v{version.version.value}
               </td>
-              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-4 py-3 whitespace-nowrap text-sm text-muted-foreground">
                 {version.releaseDate.toLocaleDateString()}
               </td>
               {hasIOS && (
@@ -67,7 +67,7 @@ export default function SDKVersionTable({
                       {platformDisplayService.formatPlatformDisplay(iosReq)}
                     </span>
                   ) : (
-                    <span className="text-gray-400">-</span>
+                    <span className="text-muted-foreground">-</span>
                   )}
                 </td>
               )}
@@ -78,7 +78,7 @@ export default function SDKVersionTable({
                       {platformDisplayService.formatPlatformDisplay(androidReq)}
                     </span>
                   ) : (
-                    <span className="text-gray-400">-</span>
+                    <span className="text-muted-foreground">-</span>
                   )}
                 </td>
               )}

@@ -1,0 +1,104 @@
+name: "Auto-add SDK to database"
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  add-sdk:
+    runs-on: ubuntu-latest
+    if: contains(github.event.label.name, 'approved')
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Extract SDK data from issue
+        id: extract-sdk
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body;
+            
+            // Simple field extraction
+            const extractField = (fieldName) => {
+              const regex = new RegExp(`### ${fieldName}\\s*\\n\\s*(.+?)\\n`, 'i');
+              const match = body.match(regex);
+              return match ? match[1].trim() : '';
+            };
+            
+            const sdkName = extractField('SDK/Framework Name');
+            const language = extractField('Primary Programming Language');
+            
+            console.log('Extracted:', { sdkName, language });
+            
+            // Create basic SDK object
+            const sdk = {
+              name: sdkName,
+              identifiers: [sdkName.toLowerCase().replace(/[^a-z0-9]/g, '-')],
+              language: language,
+              versions: []
+            };
+            
+            if (!sdkName || !language) {
+              throw new Error('Missing required fields');
+            }
+            
+            return sdk;
+            
+      - name: Update SDKs JSON file
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const newSdk = ${{ steps.extract-sdk.outputs.result }};
+            
+            const sdksPath = './public/sdks.json';
+            const currentSdks = JSON.parse(fs.readFileSync(sdksPath, 'utf8'));
+            
+            currentSdks.push(newSdk);
+            currentSdks.sort((a, b) => a.name.localeCompare(b.name));
+            
+            fs.writeFileSync(sdksPath, JSON.stringify(currentSdks, null, 2) + '\n');
+            console.log('SDK added successfully');
+            
+      - name: Run tests
+        run: npm test
+        continue-on-error: true
+        
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/sdks.json
+          git commit -m "feat: Add SDK from issue #${{ github.event.issue.number }}"
+          git push
+          
+      - name: Close issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '🎉 SDK added successfully!'
+            });
+            
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });

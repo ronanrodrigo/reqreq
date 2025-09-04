@@ -19,23 +19,17 @@ describe('PlatformDisplayService', () => {
       expect(classes).toContain('rounded-full');
       expect(classes).toContain('text-xs');
       expect(classes).toContain('font-medium');
-      expect(classes).toContain('bg-gray-900');
-      expect(classes).toContain('text-white');
     });
 
     it('should return Android specific classes', () => {
       const classes = service.getPlatformBadgeClasses('Android');
       
-      expect(classes).toContain('bg-green-500');
-      expect(classes).toContain('text-white');
       expect(classes).toContain('inline-flex');
     });
 
     it('should return default classes for unknown platform', () => {
       const classes = service.getPlatformBadgeClasses('Unknown');
       
-      expect(classes).toContain('bg-gray-500');
-      expect(classes).toContain('text-white');
       expect(classes).toContain('inline-flex');
     });
 

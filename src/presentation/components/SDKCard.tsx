@@ -30,15 +30,15 @@ export default function SDKCard({
   } = useSDKCard(sdk, versionAnalysisService, modalService);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col h-full">
+    <div className="bg-card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col h-full border border-border">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold text-gray-900 truncate flex-1 mr-2">{sdk.name.value}</h3>
+        <h3 className="text-xl font-semibold text-card-foreground truncate flex-1 mr-2">{sdk.name.value}</h3>
         <div className="flex flex-wrap gap-1 flex-shrink-0">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">
             {sdk.language.value}
           </span>
           {sdk.tags.length > 0 && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
               {sdk.tags[0].value}
               {sdk.tags.length > 1 && ` +${sdk.tags.length - 1}`}
             </span>
@@ -51,10 +51,10 @@ export default function SDKCard({
           const version = sdk.getRecentVersion();
 
           return (
-            <div className={`border rounded-md p-2 bg-gray-50 border-gray-200`}>
+            <div className={`border rounded-md p-2 bg-muted border-border`}>
               <div className="flex items-center justify-between">
-                <span className="font-medium text-gray-900 text-sm">v{version.version.value}</span>
-                <span className="text-xs text-gray-500">
+                <span className="font-medium text-card-foreground text-sm">v{version.version.value}</span>
+                <span className="text-xs text-muted-foreground">
                   {version.releaseDate.toLocaleDateString()}
                 </span>
               </div>
@@ -75,7 +75,7 @@ export default function SDKCard({
         })()}
       </div>
       
-      <div className="mt-4 pt-4 border-t border-gray-200">
+      <div className="mt-4 pt-4 border-t border-border">
         <button
           onClick={toggleModal}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md transition-colors flex items-center justify-center gap-2"

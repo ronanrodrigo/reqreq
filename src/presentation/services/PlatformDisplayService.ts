@@ -11,11 +11,11 @@ export class PlatformDisplayService implements IPlatformDisplayService {
     
     switch (platform) {
       case 'iOS':
-        return `${baseClasses} bg-gray-900 text-white`;
+        return `${baseClasses} platform-ios`;
       case 'Android':
-        return `${baseClasses} bg-green-500 text-white`;
+        return `${baseClasses} platform-android`;
       default:
-        return `${baseClasses} bg-gray-500 text-white`;
+        return `${baseClasses} platform-default`;
     }
   }
 
